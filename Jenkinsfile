@@ -4,7 +4,7 @@ pipeline {
     environment {
         GIT_CREDENTIALS_ID = 'github-pat'                     // Your GitHub PAT credential ID
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'      // Jenkins Docker Hub credentials
-        REPO_URL = 'https://github.com/Ali-Shan3/django-notes-app.git'
+        REPO_URL = 'https://github.com/Ali-Shan3/Rock-Paper-Scissors-Cpp.git'
         BRANCH = 'main'
         IMAGE_NAME = 'django-notes-app'
         IMAGE_TAG = 'latest'
