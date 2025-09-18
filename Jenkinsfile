@@ -1,24 +1,29 @@
-pipeline {
-    agent any
-
-    environment {
-        BRANCH = 'main'
-        IMAGE_NAME = 'rock-paper-scissors-cpp'
-    }
-
-    stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: "${BRANCH}", url: 'https://github.com/Ali-Shan3/Rock-Paper-Scissors-Cpp.git'
+@Library('Shared')_
+pipeline{
+    agent { label 'dev-server'}
+    
+    stages{
+        stage("Code clone"){
+            steps{
+                sh "whoami"
+            clone("https://github.com/LondheShubham153/django-notes-app.git","main")
             }
         }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh "docker build -t ${IMAGE_NAME}:latest ."
-                }
+        stage("Code Build"){
+            steps{
+            dockerbuild("notes-app","latest")
             }
         }
+        stage("Push to DockerHub"){
+            steps{
+                dockerpush("dockerHubCreds","notes-app","latest")
+            }
+        }
+        stage("Deploy"){
+            steps{
+                deploy()
+            }
+        }
+        
     }
 }
