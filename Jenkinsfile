@@ -8,7 +8,8 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: "${BRANCH}", url: 'https://github.com/your-username/django-notes-app.git'
+                git branch: 'main', url: 'https://github.com/Ali-Shan3/Rock-Paper-Scissors-Cpp.git'
+
             }
         }
     }
