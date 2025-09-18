@@ -2,14 +2,15 @@ pipeline {
     agent any
 
     environment {
-        GIT_CREDENTIALS_ID = 'your-credentials-id' // Jenkins Git credentials
-        REPO_URL = 'https://github.com/username/repo.git'
+        GIT_CREDENTIALS_ID = 'github-pat' // Use the ID you defined in Jenkins
+        REPO_URL = 'https://github.com/Ali-Shan3/Rock-Paper-Scissors-Cpp.git'
         BRANCH = 'main'
     }
 
     stages {
         stage('Checkout') {
             steps {
+                // This line uses your GitHub PAT for authentication
                 git branch: "${BRANCH}", url: "${REPO_URL}", credentialsId: "${GIT_CREDENTIALS_ID}"
             }
         }
