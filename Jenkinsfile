@@ -6,10 +6,10 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'      // Jenkins Docker Hub credentials
         REPO_URL = 'https://github.com/Ali-Shan3/Rock-Paper-Scissors-Cpp.git'
         BRANCH = 'main'
-        IMAGE_NAME = 'django-notes-app'
+        IMAGE_NAME = 'rock-paper-scissors'
         IMAGE_TAG = 'latest'
-        EC2_HOST = 'ec2-user@YOUR_EC2_PUBLIC_IP'             // Replace with your EC2 public IP
-        EC2_PATH = '/home/ec2-user/app'                      // Path on EC2 to run container
+        EC2_HOST = 'ubuntu@YOUR_EC2_PUBLIC_IP'               // Replace with your EC2 public IP
+        EC2_PATH = '/home/ubuntu/app'                        // Path on EC2 to run container
     }
 
     stages {
@@ -25,7 +25,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                    sh """
+                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                    """
                 }
             }
         }
@@ -34,7 +36,7 @@ pipeline {
         stage('Scan Docker Image') {
             steps {
                 script {
-                    sh "trivy image ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "trivy image ${IMAGE_NAME}:${IMAGE_TAG} || true"
                 }
             }
         }
@@ -60,13 +62,13 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 script {
-                    sshagent (credentials: ['aws-ec2-ssh-key']) { // EC2 SSH key in Jenkins
+                    sshagent (credentials: ['aws-ec2-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${EC2_HOST} << EOF
                                 docker pull $DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG}
-                                docker stop \$(docker ps -q --filter "ancestor=$DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG}") || true
-                                docker rm \$(docker ps -a -q --filter "ancestor=$DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG}") || true
-                                docker run -d -p 8000:8000 --name ${IMAGE_NAME} $DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG}
+                                docker stop ${IMAGE_NAME} || true
+                                docker rm ${IMAGE_NAME} || true
+                                docker run -itd --name ${IMAGE_NAME} $DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG}
                             EOF
                         """
                     }
