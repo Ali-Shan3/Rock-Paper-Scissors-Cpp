@@ -25,12 +25,17 @@ pipeline {
             }
         }
 
-        // 🚫 Abhi ke liye comment kar diya hai
-        // stage('Push Docker Image') {
-        //     steps {
-        //         echo "Skipping push to Docker Hub (no credentials configured yet)"
-        //     }
-        // }
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                      docker tag $IMAGE_NAME:latest $DOCKER_USER/$IMAGE_NAME:latest
+                      docker push $DOCKER_USER/$IMAGE_NAME:latest
+                    '''
+                }
+            }
+        }
 
         // stage('Deploy to EC2') {
         //     steps {
