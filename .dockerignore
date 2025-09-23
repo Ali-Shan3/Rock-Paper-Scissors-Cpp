@@ -1,0 +1,10 @@
+.git
+.gitignore
+*.md
+*.log
+*.tmp
+node_modules
+venv
+__pycache__/
+*.o
+*.out
