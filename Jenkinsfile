@@ -22,15 +22,17 @@ pipeline {
         }
 
         // -------------------- Stage 2: Build Docker Image --------------------
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh """
-                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-                    """
-                }
+    stage('Build Docker Image') {
+        steps {
+            script {
+                sh """
+                    docker build --progress=plain --no-cache -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                """
             }
         }
+    }
+
+        
 
         // -------------------- Stage 3: Scan Image --------------------
         stage('Scan Docker Image') {
